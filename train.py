@@ -39,15 +39,22 @@ global_step = 0
 
 
 def main():
-  """Assume Single Node Multi GPUs Training Only"""
-  assert torch.cuda.is_available(), "CPU training is not allowed."
+    """Training on CPU"""
+    
+    # Удалите или закомментируйте следующую строку для отключения проверки GPU
+    # assert torch.cuda.is_available(), "CPU training is not allowed."
 
-  n_gpus = torch.cuda.device_count()
-  os.environ['MASTER_ADDR'] = 'localhost'
-  os.environ['MASTER_PORT'] = '80000'
+    # Установка количества используемых GPU на 0, так как мы используем CPU
+    #n_gpus = torch.cuda.device_count()
+    n_gpus = 0
+    os.environ['MASTER_ADDR'] = 'localhost'
+    os.environ['MASTER_PORT'] = '80000'
 
-  hps = utils.get_hparams()
-  mp.spawn(run, nprocs=n_gpus, args=(n_gpus, hps,))
+    hps = utils.get_hparams()
+    #mp.spawn(run, nprocs=n_gpus, args=(n_gpus, hps,))
+    
+    # Запуск процесса обучения на CPU ( удалить если вернуть на места)
+    run(0, n_gpus, hps)  # Измените аргументы функции run в соответствии с ее требованиями
 
 
 def run(rank, n_gpus, hps):
